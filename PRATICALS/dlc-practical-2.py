@@ -9,9 +9,9 @@ import dlc_practical_prologue as prologue
 # 1 Nearest neighbor
 
 def nearest_classification(train_input, train_target, x):
-    distances = torch.sum(torch.pow(train_input - x, 2), 1)
+    distances = torch.norm(train_input - x, 2, 1)
     _ , indices = distances.sort()
-    return train_target[indices[1]]
+    return train_target[indices]
 
 
 # 2 Error estimation
@@ -21,9 +21,17 @@ def compute_nb_errors(train_input, train_target, test_input, test_target, mean =
         train_input = train_input - mean.view(mean.size()[0], 1).expand_as(train_input)
         test_input  = test_input  - mean.view(mean.size()[0], 1).expand_as(test_input)
 
-    #if proj is not None:
+    if proj is not None:
+        train_input = train_input * proj.transpose(1, 0)
+        test_input = test_input * proj.transpose(1, 0)
 
-    return 0
+    error = 0
+    for index, test in enumerate(test_input):
+        label = nearest_classification(train_input, train_target, test)
+        if not label[0] == test_target[index]:
+            error += 1
+
+    return error
 
 
 # 3 PCA
