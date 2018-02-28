@@ -56,7 +56,7 @@ for cifar in [False, True]:
 
     basis = train_input.new(100, train_input.size(1)).normal_()
     nb_error = compute_nb_errors(train_input, train_target, test_input, test_target, None, basis)
-    print("Number of error: " + str(nb_error/test_input.size(0)))
+    print("%_error: " + str(nb_error/test_input.size(0)))
 
     mean, basis = PCA(train_input)
     train_input
